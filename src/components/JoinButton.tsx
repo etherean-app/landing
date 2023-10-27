@@ -1,67 +1,73 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useAccount, useSignMessage } from "wagmi";
-import useSWR, { Fetcher } from "swr";
+// import { Fetcher } from "swr";
+// import useSWRImmutable from "swr/immutable";
 import { API_URL, JOINED_COOKIE_NAME, MESSAGE_TO_SIGN } from "../constants";
+import { ServerError } from "../error";
 
-type Response = {
-  [address in string]: number;
-};
+// type WaitlistResponse = {
+//   [address in string]: number;
+// };
 
-const fetcherWaitlist: Fetcher<Response, string> = () => {
-  return fetch(API_URL).then((res) => res.json());
-};
+// const fetcherWaitlist: Fetcher<WaitlistResponse, string> = () => {
+//   return fetch(API_URL).then((res) => res.json());
+// };
 
-const postAddress = async (body: { address: string; signature: string }) => {
-  const response = await fetch(API_URL, {
+const postAddress = (body: { address: string; signature: string }) => {
+  return fetch(API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(body),
+  }).then(async (res) => {
+    const result = await res.json();
+
+    if (!res.ok) {
+      throw new ServerError(result);
+    }
+
+    return result;
   });
-  return await response.json();
 };
 
 export const JoinButton = () => {
   const { address } = useAccount();
   const { data: signature, error, isLoading, signMessage } = useSignMessage();
   const [cookies, setCookie] = useCookies([JOINED_COOKIE_NAME]);
-  const [errorJoin, setErrorJoin] = useState<Error | undefined>();
-  const {
-    data: dataWaitlist,
-    error: errorWaitlist,
-    isLoading: isLoadingWaitlist,
-  } = useSWR("waitlist", fetcherWaitlist);
-  console.log("useSWR: ", dataWaitlist, errorWaitlist, isLoadingWaitlist);
+  const [errorJoin, setErrorJoin] = useState<ServerError | undefined>();
+  // const {
+  //   data: dataWaitlist,
+  //   error: errorWaitlist,
+  //   isLoading: isLoadingWaitlist,
+  //   mutate,
+  // } = useSWRImmutable("waitlist", fetcherWaitlist);
 
   const isInWaitlist = useMemo(() => {
-    if (dataWaitlist && address) {
-      return dataWaitlist[address.toLowerCase()];
-    }
+    // if (dataWaitlist && address) {
+    //   return dataWaitlist[address.toLowerCase()];
+    // }
 
-    return false;
-  }, [address, dataWaitlist]);
+    // return false;
+
+    return cookies[JOINED_COOKIE_NAME];
+  }, [cookies]);
 
   useEffect(() => {
     const request = async () => {
-      // console.debug(address, signature, cookies[JOINED_COOKIE_NAME]);
-      if (
-        !isInWaitlist &&
-        address &&
-        signature
-        // && !cookies[JOINED_COOKIE_NAME]
-      ) {
+      if (!isInWaitlist && address && signature) {
         console.info(address, signature, cookies[JOINED_COOKIE_NAME]);
         try {
           await postAddress({
             address,
             signature,
           });
-          // setCookie(JOINED_COOKIE_NAME, 1);
+          // await mutate();
+          setCookie(JOINED_COOKIE_NAME, 1);
         } catch (err) {
-          console.error(err);
-          setErrorJoin(err as Error);
+          console.log(999, err);
+          setErrorJoin(err as ServerError);
         }
       }
     };
@@ -72,9 +78,9 @@ export const JoinButton = () => {
     signMessage({ message: MESSAGE_TO_SIGN });
   }, [signMessage]);
 
-  if (isLoadingWaitlist) {
-    return <div>Loading</div>;
-  }
+  // if (isLoadingWaitlist) {
+  //   return <div>Loading</div>;
+  // }
 
   if (
     // cookies[JOINED_COOKIE_NAME] &&
@@ -85,9 +91,9 @@ export const JoinButton = () => {
   }
 
   if (
-    isInWaitlist &&
+    isInWaitlist
     // || cookies[JOINED_COOKIE_NAME]
-    !errorWaitlist
+    // && !errorWaitlist
   ) {
     return <div>You're in waitlist already</div>;
   }
@@ -99,7 +105,7 @@ export const JoinButton = () => {
       </button>
       {error && <div>{error.message}</div>}
       {errorJoin && <div>{errorJoin.message}</div>}
-      {errorWaitlist && <div>{errorWaitlist.message}</div>}
+      {/* {errorWaitlist && <div>{errorWaitlist.message}</div>} */}
     </div>
   );
 };
