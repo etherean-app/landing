@@ -68,6 +68,13 @@ export const JoinButton = () => {
         } catch (err) {
           console.log(999, err);
           setErrorJoin(err as ServerError);
+
+          if (
+            (err as ServerError).message ===
+            "Ethereum address already subscribed"
+          ) {
+            setCookie(JOINED_COOKIE_NAME, 1);
+          }
         }
       }
     };
