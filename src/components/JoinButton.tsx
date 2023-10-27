@@ -74,7 +74,6 @@ export const JoinButton = () => {
       </button>
       {error && <div>{error.message}</div>}
       {errorJoin && <div>{errorJoin.message}</div>}
-      {/* {errorWaitlist && <div>{errorWaitlist.message}</div>} */}
     </div>
   );
 };
