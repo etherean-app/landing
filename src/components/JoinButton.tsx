@@ -1,18 +1,8 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useAccount, useSignMessage } from "wagmi";
-// import { Fetcher } from "swr";
-// import useSWRImmutable from "swr/immutable";
 import { API_URL, JOINED_COOKIE_NAME, MESSAGE_TO_SIGN } from "../constants";
 import { ServerError } from "../error";
-
-// type WaitlistResponse = {
-//   [address in string]: number;
-// };
-
-// const fetcherWaitlist: Fetcher<WaitlistResponse, string> = () => {
-//   return fetch(API_URL).then((res) => res.json());
-// };
 
 const postAddress = (body: { address: string; signature: string }) => {
   return fetch(API_URL, {
@@ -37,22 +27,7 @@ export const JoinButton = () => {
   const { data: signature, error, isLoading, signMessage } = useSignMessage();
   const [cookies, setCookie] = useCookies([JOINED_COOKIE_NAME]);
   const [errorJoin, setErrorJoin] = useState<ServerError | undefined>();
-  // const {
-  //   data: dataWaitlist,
-  //   error: errorWaitlist,
-  //   isLoading: isLoadingWaitlist,
-  //   mutate,
-  // } = useSWRImmutable("waitlist", fetcherWaitlist);
-
-  const isInWaitlist = useMemo(() => {
-    // if (dataWaitlist && address) {
-    //   return dataWaitlist[address.toLowerCase()];
-    // }
-
-    // return false;
-
-    return cookies[JOINED_COOKIE_NAME];
-  }, [cookies]);
+  const isInWaitlist = cookies[JOINED_COOKIE_NAME];
 
   useEffect(() => {
     const request = async () => {
@@ -63,7 +38,6 @@ export const JoinButton = () => {
             address,
             signature,
           });
-          // await mutate();
           setCookie(JOINED_COOKIE_NAME, 1);
         } catch (err) {
           console.log(999, err);
@@ -85,23 +59,11 @@ export const JoinButton = () => {
     signMessage({ message: MESSAGE_TO_SIGN });
   }, [signMessage]);
 
-  // if (isLoadingWaitlist) {
-  //   return <div>Loading</div>;
-  // }
-
-  if (
-    // cookies[JOINED_COOKIE_NAME] &&
-    signature &&
-    !errorJoin
-  ) {
+  if (signature && !errorJoin) {
     return <div>You're successfuly joined waitlist</div>;
   }
 
-  if (
-    isInWaitlist
-    // || cookies[JOINED_COOKIE_NAME]
-    // && !errorWaitlist
-  ) {
+  if (isInWaitlist) {
     return <div>You're in waitlist already</div>;
   }
 

@@ -17,9 +17,6 @@ dependencies:
   react-dom:
     specifier: ^18.2.0
     version: 18.2.0(react@18.2.0)
-  swr:
-    specifier: ^2.2.4
-    version: 2.2.4(react@18.2.0)
   viem:
     specifier: ^1.17.2
     version: 1.17.2(typescript@5.2.2)
@@ -1843,10 +1840,6 @@ packages:
       fsevents: 2.3.3
     dev: true
 
-  /client-only@0.0.1:
-    resolution: {integrity: sha512-IV3Ou0jSMzZrd3pZ48nLkT9DA7Ag1pnPzaiQhpW7c3RbcqqzvzzVu+L8gfqMp/8IM2MQtSiqaCxrrcfu8I8rMA==}
-    dev: false
-
   /cliui@6.0.0:
     resolution: {integrity: sha512-t6wbgtoCXvAzst7QgXxJYqPt0usEfbgQdftEPbLL/cvv6HPE5VgvqCuAIDR0NgU52ds6rFwqrgakNLrHEjCbrQ==}
     dependencies:
@@ -3483,16 +3476,6 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
     dev: true
-
-  /swr@2.2.4(react@18.2.0):
-    resolution: {integrity: sha512-njiZ/4RiIhoOlAaLYDqwz5qH/KZXVilRLvomrx83HjzCWTfa+InyfAjv05PSFxnmLzZkNO9ZfvgoqzAaEI4sGQ==}
-    peerDependencies:
-      react: ^16.11.0 || ^17.0.0 || ^18.0.0
-    dependencies:
-      client-only: 0.0.1
-      react: 18.2.0
-      use-sync-external-store: 1.2.0(react@18.2.0)
-    dev: false
 
   /tailwindcss@3.3.5:
     resolution: {integrity: sha512-5SEZU4J7pxZgSkv7FP1zY8i2TIAOooNZ1e/OGtxIEv6GltpoiXUqWvLy89+a10qYTB1N5Ifkuw9lqQkN9sscvA==}
