@@ -32,7 +32,6 @@ export const JoinButton = () => {
   useEffect(() => {
     const request = async () => {
       if (!isInWaitlist && address && signature) {
-        console.info(address, signature, cookies[JOINED_COOKIE_NAME]);
         try {
           await postAddress({
             address,
@@ -40,7 +39,6 @@ export const JoinButton = () => {
           });
           setCookie(JOINED_COOKIE_NAME, 1);
         } catch (err) {
-          console.log(999, err);
           setErrorJoin(err as ServerError);
 
           if (
